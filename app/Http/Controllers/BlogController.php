@@ -13,9 +13,10 @@ class BlogController extends Controller
      * Show the application dashboard.
      *
      * @return \Illuminate\Contracts\Support\Renderable
+     *
      * @see https://github.com/symfony/demo/blob/main/src/Controller/BlogController.php#L51
      */
-    public function index($page = 1)
+    public function index()
     {
         $latestPosts = Post::paginate(10)->sortBy('published_at');
 

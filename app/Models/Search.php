@@ -2,7 +2,9 @@
 /**
  * @link https://www.twilio.com/blog/build-live-search-box-laravel-livewire-mysql
  */
+
 namespace App\Models;
+
 use function Symfony\Component\String\u;
 
 trait Search
@@ -18,7 +20,8 @@ trait Search
         });
     }
 
-    protected function scopeSearch($query, $term) {
+    protected function scopeSearch($query, $term)
+    {
         $searchTerms = $this->extractSearchTerms($term);
 
         foreach ($searchTerms as $term) {

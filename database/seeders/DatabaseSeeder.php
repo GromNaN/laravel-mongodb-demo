@@ -57,13 +57,13 @@ class DatabaseSeeder extends Seeder
             $post->tags()->attach($tags);
 
             foreach (range(1, 5) as $i) {
-                $commentAuthor = $i%2 ? $this->users['john_user'] : $author;
+                $commentAuthor = $i % 2 ? $this->users['john_user'] : $author;
 
                 Comment::factory()->create([
                     'content' => fake()->paragraph(2, true),
                     'post_id' => $post->id,
                     'author_id' => $commentAuthor->id,
-                    'published_at' => (clone $post->published_at)->modify(sprintf('+%s minutes', $i*3)),
+                    'published_at' => (clone $post->published_at)->modify(sprintf('+%s minutes', $i * 3)),
                 ]);
             }
         }
@@ -100,10 +100,11 @@ class DatabaseSeeder extends Seeder
             'pariatur',
         ];
     }
+
     /**
-     * @throws \Exception
-     *
      * @return array<int, array{0: string, 1: string, 2: string, 3: string, 4: \DateTime, 5: User, 6: array<Tag>}>
+     *
+     * @throws \Exception
      */
     private function getPostData(): array
     {
