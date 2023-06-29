@@ -12,6 +12,10 @@ class Post extends Model
     use HasFactory;
     use HasSlug;
 
+    protected $casts = [
+        'published_at' => 'immutable_datetime',
+    ];
+
     public function author()
     {
         return $this->belongsTo(User::class);
