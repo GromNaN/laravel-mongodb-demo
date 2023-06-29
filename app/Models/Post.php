@@ -11,10 +11,16 @@ class Post extends Model
 {
     use HasFactory;
     use HasSlug;
+    use Search;
 
     protected $casts = [
         'published_at' => 'immutable_datetime',
     ];
+
+    /**
+     * @see Search::scopeSearch()
+     */
+    protected $searchable = 'title';
 
     public function author()
     {

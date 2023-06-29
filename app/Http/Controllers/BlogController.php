@@ -50,4 +50,13 @@ class BlogController extends Controller
 
         return redirect()->back()->with('success', 'Thank you for your comment!');
     }
+
+    public function search(Request $request)
+    {
+        $term = $request->input('term');
+
+        return view('blog/search', [
+            'term' => $term,
+        ]);
+    }
 }

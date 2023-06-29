@@ -27,6 +27,8 @@ Route::get('/blog/page/page<[1-9]\d{0,8}>}', [App\Http\Controllers\BlogControlle
 Route::get('/blog/post/{slug}', [App\Http\Controllers\BlogController::class, 'postShow'])->name('blog_post');
 Route::post('/blog/post/{id}/comments', [App\Http\Controllers\BlogController::class, 'commentNew'])->name('blog_post_comment_new')->middleware('auth');
 
+Route::get('/blog/search', [App\Http\Controllers\BlogController::class, 'search'])->name('blog_search');
+
 Route::get('/admin/post/', [App\Http\Controllers\Admin\BlogController::class, 'index'])->name('admin_post_index');
 Route::get('/admin/post/new', [App\Http\Controllers\Admin\BlogController::class, 'new'])->name('admin_post_new');
 Route::post('/admin/post/', [App\Http\Controllers\Admin\BlogController::class, 'create'])->name('admin_post_create');
