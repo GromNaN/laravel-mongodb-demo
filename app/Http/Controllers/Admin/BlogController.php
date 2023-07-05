@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\FormRequest\CreatePostRequest;
 use App\Models\Post;
+use App\Models\Tag;
 use Illuminate\Support\Facades\Auth;
 
 class BlogController extends Controller
@@ -38,10 +39,7 @@ class BlogController extends Controller
 
         $post = new Post();
         $post->author()->associate(Auth::user());
-        $post->title = $validatedData['title'];
-        $post->summary = $validatedData['summary'];
-        $post->content = $validatedData['content'];
-        $post->published_at = $validatedData['published_at'];
+        $this->hydratePost($post, $validatedData);
         $post->save();
 
         return redirect()->route('admin_post_index')->with('success', 'Post created successfully');
@@ -60,11 +58,7 @@ class BlogController extends Controller
     {
         $post = $this->getPost($id);
         $validatedData = $request->validated();
-
-        $post->title = $validatedData['title'];
-        $post->summary = $validatedData['summary'];
-        $post->content = $validatedData['content'];
-        $post->published_at = $validatedData['published_at'];
+        $this->hydratePost($post, $validatedData);
         $post->save();
 
         return redirect()->route('admin_post_edit', $post)->with('success', 'Post updated successfully');
@@ -85,6 +79,25 @@ class BlogController extends Controller
         if ($post->author_id !== Auth::user()->id) {
             abort(403);
         }
+
+        return $post;
+    }
+
+    private function hydratePost(Post $post, array $data): Post
+    {
+        $post->title = $data['title'];
+        $post->summary = $data['summary'];
+        $post->content = $data['content'];
+        $post->published_at = $data['published_at'];
+
+        // Split the list into individual tag names and trim whitespace
+        $tagNames = array_filter(array_map('trim', explode(',', $data['tags'] ?? '')));
+
+        // Retrieve or create the corresponding Tag models
+        $tagIds = array_map(function ($tagName) {
+            return Tag::firstOrCreate(['name' => $tagName])->id;
+        }, $tagNames);
+        $post->tags()->sync($tagIds);
 
         return $post;
     }

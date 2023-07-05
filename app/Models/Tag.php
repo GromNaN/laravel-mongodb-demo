@@ -12,6 +12,10 @@ class Tag extends Model
     use HasFactory;
     use HasSlug;
 
+    protected $fillable = [
+        'name',
+    ];
+
     /**
      * Get the options for generating the slug.
      */

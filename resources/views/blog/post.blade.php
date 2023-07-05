@@ -12,6 +12,11 @@
                     <div class="card-body">
                         <x-markdown>{{ $post->content }}</x-markdown>
                     </div>
+                    <ul>
+                        @foreach($post->tags as $tag)
+                        <li>{{ $tag->name }}</li>
+                        @endforeach
+                    </ul>
                 </div>
 
                 <div class="card">
@@ -35,7 +40,9 @@
                 @foreach($post->comments as $comment)
                 <div class="card">
                     <div class="card-header">
-                        <strong>{{ $comment->author->name }}</strong> commented on <time>{{ $comment->published_at }}</time>
+                        <strong>{{ $comment->author->name }}</strong>
+                        commented on
+                        <time>{{ $comment->published_at }}</time>
                     </div>
                     <div class="card-body">
                         <x-markdown>{{ $comment->content }}</x-markdown>

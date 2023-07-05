@@ -9,6 +9,9 @@ class Comment extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'published_at' => 'datetime',
+    ];
     public function post()
     {
         return $this->belongsTo(Post::class);
