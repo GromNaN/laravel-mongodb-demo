@@ -5,28 +5,15 @@
 
 namespace App\Models;
 
+use Jenssegers\Mongodb\Eloquent\Builder;
 use function Symfony\Component\String\u;
 
 trait Search
 {
-    private function extractSearchTerms(string $searchQuery): array
+    protected function scopeSearch(Builder $query, $term)
     {
-        $searchQuery = u($searchQuery)->replaceMatches('/[[:space:]]+/', ' ')->trim();
-        $terms = array_unique($searchQuery->split(' '));
-
-        // ignore the search terms that are too short
-        return array_filter($terms, static function ($term) {
-            return 2 <= $term->length();
-        });
-    }
-
-    protected function scopeSearch($query, $term)
-    {
-        $searchTerms = $this->extractSearchTerms($term);
-
-        foreach ($searchTerms as $term) {
-            $query->orWhere($this->searchable, 'LIKE', "%{$term}%");
-        }
+        //$query->where('title', 'like', $term);
+        $query->where('$text', ['$search' => $term]);
         $query->orderBy('published_at', 'DESC');
 
         return $query;
