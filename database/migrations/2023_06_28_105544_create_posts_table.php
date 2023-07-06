@@ -19,11 +19,14 @@ return new class extends Migration
             $collection->text('summary');
             $collection->text('content');
             $collection->date('published_at');
+            $collection->date('deleted_at');
             $collection->integer('author_id')->unsigned();
             $collection->foreign('author_id')
                 ->references('id')->on('users')
                 ->onDelete('restrict');
             $collection->index(['title' => 'text']);
+            $collection->index('published_at');
+            $collection->index('deleted_at');
         });
 
         Schema::create('comments', function (Blueprint $collection) {

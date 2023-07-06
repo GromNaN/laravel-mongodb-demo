@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Jenssegers\Mongodb\Eloquent\Model;
+use Jenssegers\Mongodb\Eloquent\SoftDeletes;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -12,6 +13,7 @@ class Post extends Model
     use HasFactory;
     use HasSlug;
     use Search;
+    use SoftDeletes;
 
     protected $casts = [
         'published_at' => 'immutable_datetime',
