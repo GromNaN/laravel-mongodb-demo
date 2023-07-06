@@ -7,6 +7,14 @@
                 <div class="messages"></div>
                 <h1>Article list</h1>
 
+                <label for="nbTags">Filter by number of tags :</label>
+                <select onchange="window.location.href = this.value" id="nbTags" style="width: 3em">
+                    <option value="{{ route('admin_post_index') }}" {{ $nbTags ? '' : 'selected' }}>&nbsp;</option>
+                    @foreach($nbTagsChoices as $number)
+                        <option value="{{ route('admin_post_index', ['nbTags' => $number]) }}" {{ $nbTags == $number ? 'selected' : '' }}>{{ $number }}</option>
+                    @endforeach
+                </select>
+
                 <table class="table table-striped table-middle-aligned table-borderless">
                     <thead>
                     <tr>
