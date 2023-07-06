@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Jenssegers\Mongodb\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -11,50 +11,32 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->string('title');
-            $table->string('slug')->unique();
-            $table->text('summary');
-            $table->text('content');
-            $table->date('published_at');
-            $table->integer('author_id')->unsigned();
-            $table->foreign('author_id')
+        Schema::create('posts', function (Blueprint $collection) {
+            $collection->id();
+            $collection->timestamps();
+            $collection->string('title');
+            $collection->string('slug')->unique();
+            $collection->text('summary');
+            $collection->text('content');
+            $collection->date('published_at');
+            $collection->integer('author_id')->unsigned();
+            $collection->foreign('author_id')
                 ->references('id')->on('users')
                 ->onDelete('restrict');
+            $collection->index(['title' => 'text']);
         });
 
-        Schema::create('tags', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->string('name');
-            $table->string('slug')->unique();
-        });
-
-        Schema::create('post_tag', function (Blueprint $table) {
-            $table->primary(['post_id', 'tag_id']);
-            $table->integer('post_id')->unsigned();
-            $table->foreign('post_id')
-                ->references('id')->on('posts')
-                ->onDelete('cascade');
-            $table->integer('tag_id')->unsigned();
-            $table->foreign('tag_id')
-                ->references('id')->on('tags')
-                ->onDelete('cascade');
-        });
-
-        Schema::create('comments', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->text('content');
-            $table->date('published_at');
-            $table->integer('author_id')->unsigned();
-            $table->foreign('author_id')
+        Schema::create('comments', function (Blueprint $collection) {
+            $collection->id();
+            $collection->timestamps();
+            $collection->text('content');
+            $collection->date('published_at');
+            $collection->integer('author_id')->unsigned();
+            $collection->foreign('author_id')
                 ->references('id')->on('users')
                 ->onDelete('restrict');
-            $table->integer('post_id')->unsigned();
-            $table->foreign('post_id')
+            $collection->integer('post_id')->unsigned();
+            $collection->foreign('post_id')
                 ->references('id')->on('posts')
                 ->onDelete('cascade');
         });
@@ -66,8 +48,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('comments');
-        Schema::dropIfExists('post_tag');
-        Schema::dropIfExists('tags');
         Schema::dropIfExists('posts');
     }
 };

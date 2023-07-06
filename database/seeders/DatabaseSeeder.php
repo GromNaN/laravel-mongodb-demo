@@ -19,28 +19,19 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->loadUsers();
-        $this->loadTags();
         $this->loadPosts();
     }
 
     private function loadUsers(): void
     {
         foreach ($this->getUserData() as [$name, $username, $password, $email]) {
-            $this->users[$username] = User::factory()->create([
+            $this->users[$username] = $user = User::factory()->create([
                 'name' => $name,
                 'username' => $username,
                 'email' => $email,
                 'password' => Hash::make($password),
             ]);
-        }
-    }
-
-    private function loadTags(): void
-    {
-        foreach ($this->getTagData() as $name) {
-            $this->tags[$name] = Tag::factory()->create([
-                'name' => $name,
-            ]);
+            $user->save();
         }
     }
 
@@ -54,7 +45,8 @@ class DatabaseSeeder extends Seeder
                 'published_at' => $publishedAt,
                 'author_id' => $author->id,
             ]);
-            $post->tags()->attach($tags);
+            $post->tags()->saveMany($tags);
+            $post->save();
 
             foreach (range(1, 5) as $i) {
                 $commentAuthor = $i % 2 ? $this->users['john_user'] : $author;
@@ -108,7 +100,7 @@ class DatabaseSeeder extends Seeder
      */
     private function getPostData(): array
     {
-        $tags = Tag::all();
+        $tags = array_flip($this->getTagData());
         $posts = [];
         foreach (fake()->sentences(30) as $i => $title) {
             // $postData = [$title, $slug, $summary, $content, $publishedAt, $author, $tags, $comments];
@@ -123,7 +115,9 @@ class DatabaseSeeder extends Seeder
                 fake()->dateTimeBetween('-1 year', 'now'),
                 // Ensure that the first post is written by Jane Doe to simplify tests
                 $user,
-                $tags->random(random_int(2, 3))->pluck('id')->toArray(),
+                // Take 2 or 3 random tags
+                collect(array_rand($tags, random_int(2, 3)))
+                    ->map(fn (string $name) => new Tag(['name' => $name]))
             ];
         }
 

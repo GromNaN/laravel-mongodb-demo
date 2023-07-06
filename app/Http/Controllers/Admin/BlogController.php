@@ -90,14 +90,18 @@ class BlogController extends Controller
         $post->content = $data['content'];
         $post->published_at = $data['published_at'];
 
+        // @fixme the entity must be saved before tags can be attached otherwise the tags will not be saved
+        $post->save();
+
         // Split the list into individual tag names and trim whitespace
         $tagNames = array_filter(array_map('trim', explode(',', $data['tags'] ?? '')));
 
         // Retrieve or create the corresponding Tag models
-        $tagIds = array_map(function ($tagName) {
-            return Tag::firstOrCreate(['name' => $tagName])->id;
+        $tags = array_map(function ($tagName) {
+            return new Tag(['name' => $tagName]);
         }, $tagNames);
-        $post->tags()->sync($tagIds);
+        $post->tags()->delete();
+        $post->tags()->saveMany($tags);
 
         return $post;
     }
