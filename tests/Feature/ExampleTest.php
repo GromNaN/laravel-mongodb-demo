@@ -1,19 +1,18 @@
 <?php
 
-namespace Tests\Feature;
+it('returns a successful response', function () {
+    $response = $this->get('/');
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+    $response->assertStatus(200);
+});
 
-class ExampleTest extends TestCase
-{
-    /**
-     * A basic test example.
-     */
-    public function test_the_application_returns_a_successful_response(): void
-    {
-        $response = $this->get('/');
+it('list all posts', function () {
+    $crawler = $this->client->request('GET', '/blog');
 
-        $response->assertStatus(200);
-    }
-}
+
+    $response = $this->get('/blog');
+
+    $response->assertStatus(200);
+
+    dd($response);
+});
