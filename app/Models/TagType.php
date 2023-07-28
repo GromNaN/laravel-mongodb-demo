@@ -7,7 +7,7 @@ use Jenssegers\Mongodb\Eloquent\Model;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
-class Tag extends Model
+class TagType extends Model
 {
     use HasFactory;
     use HasSlug;
@@ -26,13 +26,13 @@ class Tag extends Model
             ->saveSlugsTo('slug');
     }
 
-    public function posts()
+    public function categories()
     {
-        return $this->belongsToMany(Post::class);
+        return $this->embedsMany(TagTypeCategory::class);
     }
 
-    public function types()
+    public function tags()
     {
-        return $this->embedsMany(TagType::class);
+        return $this->belongsToMany(Tag::class);
     }
 }
