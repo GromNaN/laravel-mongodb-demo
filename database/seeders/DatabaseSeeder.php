@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Models\TagType;
+use App\Models\TagTypeCategory;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -100,7 +102,19 @@ class DatabaseSeeder extends Seeder
      */
     private function getPostData(): array
     {
-        $tags = array_flip($this->getTagData());
+        $tags = array_map(function (string $name) {
+            $category = new TagTypeCategory(['name' => $name.'category']);
+            //$category->save();
+            $type = new TagType(['name' => $name.'.type']);
+            $type->categories()->saveMany([$category]);
+            //$type->save();
+            $tag = new Tag(['name' => $name]);
+            $tag->types()->saveMany([$type]);
+            $tag->save();
+
+            return $tag;
+        }, $this->getTagData());
+
         $posts = [];
         foreach (fake()->sentences(30) as $i => $title) {
             // $postData = [$title, $slug, $summary, $content, $publishedAt, $author, $tags, $comments];
@@ -116,9 +130,11 @@ class DatabaseSeeder extends Seeder
                 // Ensure that the first post is written by Jane Doe to simplify tests
                 $user,
                 // Take 2 or 3 random tags
-                collect(array_rand($tags, random_int(2, 3)))
-                    ->map(fn (string $name) => new Tag(['name' => $name]))
+                //[new Tag(['name' => 'test'])],
+                [$tags[0]],
+                //collect(array_rand($tags, random_int(2, 3)))
             ];
+            break;
         }
 
         return $posts;
