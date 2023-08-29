@@ -6,6 +6,7 @@ use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
+use Encore\Admin\Auth\Database\AdminTablesSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -18,6 +19,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        (new AdminTablesSeeder)->run();
+
         $this->loadUsers();
         $this->loadPosts();
     }
