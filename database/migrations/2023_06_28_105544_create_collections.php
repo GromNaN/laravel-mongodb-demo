@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        /*
         Schema::create('posts', function (Blueprint $collection) {
             $collection->id();
             $collection->timestamps();
@@ -43,6 +44,7 @@ return new class extends Migration
                 ->references('id')->on('posts')
                 ->onDelete('cascade');
         });
+        */
     }
 
     /**
