@@ -5,7 +5,6 @@
 
 namespace App\Models;
 
-use Jenssegers\Mongodb\Eloquent\Builder;
 use function Symfony\Component\String\u;
 
 trait Search
