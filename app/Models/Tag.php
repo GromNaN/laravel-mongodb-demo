@@ -7,6 +7,9 @@ use MongoDB\Laravel\Eloquent\Model;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
+/**
+ * This model hasn't collection. It is directly embedded in Post models.
+ */
 class Tag extends Model
 {
     use HasFactory;

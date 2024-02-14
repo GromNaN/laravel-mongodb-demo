@@ -11,6 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
+        DB::connection('mongodb')->enableQueryLog();
+
         Schema::create('posts', function (Blueprint $collection) {
             $collection->id();
             $collection->timestamps();
