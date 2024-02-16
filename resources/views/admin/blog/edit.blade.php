@@ -1,57 +1,60 @@
-@extends('admin.layout')
+<x-app-layout>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6">
+                    <h1>Edit article #{{ $post->id }}</h1>
+                    <form action="{{ route('admin_post_update', $post) }}" method="POST">
+                        @csrf
+                        @method('PUT')
 
-@section('content')
-    <div class="container body-container">
-        <div class="row">
-            <div id="main" class="col-sm-9">
-                <div class="messages"></div>
-                <h1>Edit article #{{ $post->id }}</h1>
-                <form action="{{ route('admin_post_update', $post) }}" method="POST">
-                    @csrf
-                    @method('PUT')
+                        <div class="mb-6">
+                            <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
+                            <input type="text" name="title" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required
+                                   value="{{ $post->title }}">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="title">Title:</label>
-                        <input type="text" name="title" id="title" class="form-control" required value="{{ $post->title }}">
-                    </div>
+                        <div class="mb-6">
+                            <label for="summary" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Summary</label>
+                            <textarea name="summary" id="summary" rows="3" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                      required>{{ $post->summary }}</textarea>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="summary">Summary:</label>
-                        <textarea name="summary" id="summary" rows="3" class="form-control" required>{{ $post->summary }}</textarea>
-                    </div>
+                        <div class="mb-6">
+                            <label for="content" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Content</label>
+                            <textarea name="content" id="content" rows="6" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                      required>{{ $post->content }}</textarea>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="content">Content:</label>
-                        <textarea name="content" id="content" rows="6" class="form-control" required>{{ $post->content }}</textarea>
-                    </div>
+                        <div class="mb-6">
+                            <label for="published_at" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Published At</label>
+                            <input type="datetime-local" name="published_at" id="published_at" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                   required value="{{ $post->published_at->format('Y-m-d\TH:i') }}">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="published_at">Published At:</label>
-                        <input type="datetime-local" name="published_at" id="published_at" class="form-control" required value="{{ $post->published_at->format('Y-m-d\TH:i') }}">
-                    </div>
+                        <div class="mb-6">
+                            <label for="tags" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tags</label>
+                            <input type="text" name="tags" id="tags" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                   value="{{ implode(', ', $post->tags()->pluck('name')->toArray())  }}">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="tags">Tags:</label>
-                        <input type="text" name="tags" id="tags" class="form-control" value="{{ implode(', ', $post->tags()->pluck('name')->toArray())  }}">
-                    </div>
-
-                    <button type="submit" class="btn btn-primary"><i class="fa fa-save" aria-hidden="true"></i> Save</button>
-
-                    <a href="{{ route('admin_post_index') }}" class="btn btn-link">
-                        <i class="fa fa-list-alt" aria-hidden="true"></i> Back to article list
-                    </a>
-                </form>
-            </div>
-            <div id="sidebat" class="col-sm-3">
-                <div class="section">
-                    <form action="{{ route('admin_post_delete', $post) }}" method="DELETE">
-                        <button type="submit" class="btn btn-lg btn-block btn-danger">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
-                            Delete
+                        <button type="submit" class="bg-sky-500 hover:bg-sky-700 px-5 py-2 mx-2 text-sm leading-5 rounded-full font-semibold text-white">
+                            Save
                         </button>
+
+                        <a href="{{ route('admin_post_index') }}" class="bg-gray-500 hover:bg-gray-700 px-5 py-2 mx-2 text-sm leading-5 rounded-full font-semibold text-white">
+                            Back to article list
+                        </a>
                     </form>
+                    <div class="mb-6 py-2.5">
+                        <form action="{{ route('admin_post_delete', $post) }}" method="DELETE">
+                            <button type="submit" class="bg-red-500 hover:bg-red-700 px-5 py-2 mx-2 text-sm leading-5 rounded-full font-semibold text-white">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-@endsection
+</x-app-layout>

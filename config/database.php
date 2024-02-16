@@ -101,6 +101,7 @@ return [
             #'username' => env('DB_USERNAME', 'homestead'),
             #'password' => env('DB_PASSWORD', 'secret'),
             'options' => [
+                'readPreference' => \MongoDB\Driver\ReadPreference::SECONDARY,
                 'appname' => 'homestead',
             ],
         ],

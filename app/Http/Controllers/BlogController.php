@@ -29,6 +29,10 @@ class BlogController extends Controller
     {
         $post = Post::findBySlug($slug);
 
+        if (!$post) {
+            abort(404);
+        }
+
         return view('blog/post', [
             'post' => $post,
         ]);
