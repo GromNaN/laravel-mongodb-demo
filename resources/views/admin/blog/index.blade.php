@@ -33,9 +33,8 @@
                         @forelse ($paginator as $post)
                             <tr>
                                 <td class="border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-slate-500 dark:text-slate-400">
-                                    <a href="{{ route('blog_post', [$post->slug]) }}" class="font-medium text-blue-600 hover:underline">
-                                        {{ $post->title }}
-                                    </a>
+                                    {{ $post->title }}
+                                    <a href="{{ route('blog_post', [$post->slug]) }}" target="_blank" class="font-medium text-blue-600 hover:underline">🔗</a>
                                 </td>
                                 <td class="border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-slate-500 dark:text-slate-400">{{ $post->published_at }}</td>
                                 <td class="border-b border-slate-100 dark:border-slate-700 p-4 pl-8 text-slate-500 dark:text-slate-400">{{ implode(', ', array_column($post->tags->toArray(), 'name')) }}</td>

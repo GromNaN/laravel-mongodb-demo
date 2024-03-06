@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BlogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,16 +15,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [\App\Http\Controllers\HomeController::class, 'index']);
 
-Route::get('/blog/', [App\Http\Controllers\BlogController::class, 'index'])->name('blog_index');
-Route::get('/blog/rss.xml', [App\Http\Controllers\BlogController::class, 'index'])->name('blog_rss');
-Route::get('/blog/page/page<[1-9]\d{0,8}>}', [App\Http\Controllers\BlogController::class, 'index'])->name('blog_index_paginated');
-Route::get('/blog/post/{slug}', [App\Http\Controllers\BlogController::class, 'postShow'])->name('blog_post');
-Route::post('/blog/post/{id}/comments', [App\Http\Controllers\BlogController::class, 'commentNew'])->name('blog_post_comment_new')->middleware('auth');
-Route::get('/blog/search', [App\Http\Controllers\BlogController::class, 'search'])->name('blog_search');
+Route::get('/blog/', [BlogController::class, 'index'])->name('blog_index');
+Route::get('/blog/rss.xml', [BlogController::class, 'index'])->name('blog_rss');
+Route::get('/blog/page/page<[1-9]\d{0,8}>}', [BlogController::class, 'index'])->name('blog_index_paginated');
+Route::get('/blog/post/{slug}', [BlogController::class, 'postShow'])->name('blog_post');
+Route::post('/blog/post/{id}/comments', [BlogController::class, 'commentNew'])->name('blog_post_comment_new')->middleware('auth');
+Route::get('/blog/search', [BlogController::class, 'search'])->name('blog_search');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
