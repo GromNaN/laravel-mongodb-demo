@@ -11,10 +11,12 @@ use Illuminate\Support\Str;
  */
 class UserFactory extends Factory
 {
+    protected $connection = 'mongodb';
+
     /**
      * The current password being used by the factory.
      */
-    protected static ?string $password;
+    protected static ?string $password = 'jerome';
 
     /**
      * Define the model's default state.

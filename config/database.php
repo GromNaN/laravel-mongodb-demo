@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mongodb'),
+    'default' => env('DB_CONNECTION', 'sqlite'),
 
     /*
     |--------------------------------------------------------------------------
@@ -30,7 +30,7 @@ return [
     */
 
     'connections' => [
-/*
+
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DB_URL'),
@@ -38,7 +38,7 @@ return [
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
-
+/*
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),
@@ -112,7 +112,11 @@ return [
         'mongodb' => [
             'driver' => 'mongodb',
             'dsn' => env('MONGODB_URI'),
-            'database' => 'jerome',
+            'database' => 'sample_airbnb',
+            //'username' => null,//'jerome',
+            //'password' => null,
+            'port' => 27017,
+            'host' => 'localhost',
         ]
     ],
 
