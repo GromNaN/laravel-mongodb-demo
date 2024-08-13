@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Podcast;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -19,5 +20,9 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        foreach (range(1, 10_000) as $i) {
+            Podcast::factory()->create();
+        }
     }
 }

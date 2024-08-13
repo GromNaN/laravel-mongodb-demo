@@ -112,7 +112,7 @@ return [
         'mongodb' => [
             'driver' => 'mongodb',
             'dsn' => env('MONGODB_URI'),
-            'database' => 'sample_airbnb',
+            'database' => 'laravel-demo',
             //'username' => null,//'jerome',
             //'password' => null,
             'port' => 27017,
