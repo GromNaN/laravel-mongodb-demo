@@ -2,6 +2,8 @@
 
 namespace Tests\Unit;
 
+use App\Models\Comment;
+use App\Models\Movie;
 use PHPUnit\Framework\TestCase;
 
 class ExampleTest extends TestCase
