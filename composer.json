@@ -9,9 +9,11 @@
         "laravel/framework": "^11.9",
         "laravel/scout": "^10.11",
         "laravel/tinker": "^2.9",
-        "mongodb/laravel-mongodb": "^5.1"
+        "meilisearch/meilisearch-php": "^1.11",
+        "mongodb/laravel-mongodb": "5.x-dev"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.14",
         "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.1",
         "laravel/pint": "^1.13",
