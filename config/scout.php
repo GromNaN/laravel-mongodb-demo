@@ -1,7 +1,12 @@
 <?php
 
 return [
-    'driver' => 'meilisearch',
+    'driver' => env('SCOUT_DRIVER', 'mongodb'),
+
+    'mongodb' => [
+        'connection' => env('SCOUT_MONGODB_CONNECTION', 'mongodb'),
+    ],
+    'prefix' => env('SCOUT_PREFIX', 'scout_'),
 
     'meilisearch' => [
         'host' => env('MEILISEARCH_HOST', 'http://localhost:7700'),

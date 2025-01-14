@@ -41,19 +41,10 @@ class Movie extends Model
      */
     public function toSearchableArray(): array
     {
-        $array = $this->toArray();
-
-        // Customize the data array...
-
-        // Set a default poster image, this is useful for the preview
-        $array['poster'] ??= 'https://placehold.co/400x600?text='.urlencode($array['title']);
-
-        // Hide sensitive data
-        $array['comments'] = $this->comments->map(function ($comment) {
-            return $comment->only(['name', 'text', 'date']);
-        });
-
-        return $array;
+        return [
+            'plot' => $this->plot,
+            'title' => $this->title,
+            'cast' => $this->cast,
+        ];
     }
-
 }

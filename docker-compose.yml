@@ -24,6 +24,8 @@ services:
         depends_on:
             - meilisearch
             - typesense
+            - mysql
+            - mongodb
     meilisearch:
         image: 'getmeili/meilisearch:latest'
         ports:
@@ -64,6 +66,25 @@ services:
                 - 'http://localhost:8108/health'
             retries: 5
             timeout: 7s
+    mongodb:
+        image: 'mongodb/mongodb-atlas-local:latest'
+        environment:
+            - 'MONGODB_INITDB_ROOT_USERNAME=${MONGODB_USERNAME:-}'
+            - 'MONGODB_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD:-}'
+        volumes:
+            - 'sail-mongodb:/data/db'
+        ports:
+            - '${FORWARD_MONGODB_PORT:-27017}:27017'
+        networks:
+            - sail
+        healthcheck:
+            test:
+                - CMD
+                - mongosh
+                - 'mongodb://localhost:27017/admin'
+                - '--eval=db.runCommand({ping:1})'
+            retries: 3
+            timeout: 5s
 networks:
     sail:
         driver: bridge
@@ -71,4 +92,8 @@ volumes:
     sail-meilisearch:
         driver: local
     sail-typesense:
+        driver: local
+    sail-mysql:
+        driver: local
+    sail-mongodb:
         driver: local
