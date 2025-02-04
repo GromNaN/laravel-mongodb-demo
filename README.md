@@ -6,7 +6,10 @@
 
 ## Usage 
 
-Configuration
+Configuration for indexing in Meilisearch from MongoDB
+
+    # Target search engine
+    SCOUT_DRIVER=mongodb # or meilisearch
 
     MEILISEARCH_HOST=http://localhost:7700
 
