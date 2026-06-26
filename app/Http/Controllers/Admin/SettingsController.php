@@ -12,7 +12,7 @@ class SettingsController extends Controller
 {
     public function index(): View
     {
-        $settings = ForumConfig::getAll();
+        $settings = ForumConfig::instance();
 
         return view('admin.settings.index', compact('settings'));
     }
@@ -21,9 +21,7 @@ class SettingsController extends Controller
     {
         $data = $request->except(['_token', '_method']);
 
-        foreach ($data as $key => $value) {
-            ForumConfig::set($key, $value);
-        }
+        ForumConfig::instance()->fill($data)->save();
 
         return redirect()->route('admin.settings.index')->with('success', 'Settings saved.');
     }

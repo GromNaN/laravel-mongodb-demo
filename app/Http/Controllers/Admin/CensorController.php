@@ -10,11 +10,9 @@ use Illuminate\View\View;
 
 class CensorController extends Controller
 {
-    private const CONFIG_KEY = 'censor_rules';
-
     public function index(): View
     {
-        $rules = json_decode(ForumConfig::get(self::CONFIG_KEY, '[]'), true) ?? [];
+        $rules = ForumConfig::instance()->censor_rules ?? [];
 
         return view('admin.censoring.index', compact('rules'));
     }
@@ -26,7 +24,8 @@ class CensorController extends Controller
             'replacement' => ['required', 'string', 'max:60'],
         ]);
 
-        $rules = json_decode(ForumConfig::get(self::CONFIG_KEY, '[]'), true) ?? [];
+        $config = ForumConfig::instance();
+        $rules = $config->censor_rules ?? [];
 
         $rules[] = [
             'id'          => uniqid('censor_', true),
@@ -34,7 +33,8 @@ class CensorController extends Controller
             'replacement' => $request->input('replacement'),
         ];
 
-        ForumConfig::set(self::CONFIG_KEY, json_encode($rules));
+        $config->censor_rules = $rules;
+        $config->save();
 
         return redirect()->route('admin.censoring.index')->with('success', 'Censor rule added.');
     }

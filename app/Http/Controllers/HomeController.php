@@ -17,7 +17,7 @@ class HomeController extends Controller
     public function index(): View
     {
         $categories = Category::with('forums')->orderBy('position')->get();
-        $config = ForumConfig::getAll();
+        $config = ForumConfig::instance();
         $onlineUsers = OnlineUser::where('user_id', '!=', 1)
             ->where('logged', '>=', now()->subMinutes(15))
             ->orderBy('logged', 'desc')
