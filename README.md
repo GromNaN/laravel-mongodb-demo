@@ -1,58 +1,103 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# FluxBB — Laravel + MongoDB Demo
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A faithful recreation of the [FluxBB](https://fluxbb.org) forum software built with **Laravel 13** and **MongoDB**, demonstrating how to build a real-world application using [`mongodb/laravel-mongodb`](https://github.com/mongodb/laravel-mongodb) v5.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Forum browsing** — categories, forums, topics, posts with sticky/closed states
+- **Authentication** — register, login by username or email, logout
+- **Posting** — create topics, reply, edit and delete posts with BBCode support
+- **User profiles** — view and edit profile, signature, post history
+- **Subscriptions** — subscribe/unsubscribe to forums and topics
+- **Search** — full-text search across topics and posts
+- **Moderation** — close, open, stick, unstick, move and delete topics
+- **Admin panel** — manage users, forums, categories, groups, bans, censoring, settings
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## MongoDB features showcased
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Feature | Where |
+|---------|-------|
+| Eloquent models with MongoDB | All models in `app/Models/` |
+| `hasMany` / `belongsTo` relations | `Topic::posts()`, `Post::topic()`, `Post::forum()` |
+| Embedded documents | `Forum::last_post`, `Topic::last_post` (stored as arrays) |
+| Singleton document pattern | `ForumConfig::instance()` |
+| `increment()` / `decrement()` | Forum/topic/user post counters |
+| Regex queries | `SearchController` (replaced by Atlas Search on atlas-local) |
 
-## Learning Laravel
+## Requirements
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- PHP 8.3+
+- Composer
+- Docker & Docker Compose (for the MongoDB atlas-local container)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Installation
 
 ```bash
-composer require laravel/boost --dev
+# 1. Clone and install dependencies
+git clone https://github.com/GromNaN/laravel-mongodb-demo.git fluxbb
+cd fluxbb
+composer install
 
-php artisan boost:install
+# 2. Environment
+cp .env.example .env
+php artisan key:generate
+
+# 3. Start MongoDB (atlas-local via Docker)
+docker compose up -d
+
+# 4. Seed the database
+php artisan db:seed
+
+# 5. Start the development server
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+The application is then available at `http://localhost:8000`.
 
-## Contributing
+Default admin credentials: `admin` / `adminpass`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Running tests
 
-## Code of Conduct
+```bash
+php artisan test --compact
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+The test suite runs against a separate `fluxbb_testing` MongoDB database and truncates collections between each test.
 
-## Security Vulnerabilities
+## Project structure
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```
+app/
+├── Http/
+│   ├── Controllers/         # Public controllers (forum, topic, post, auth…)
+│   │   └── Admin/           # Admin panel controllers
+│   ├── Middleware/
+│   │   └── TrackOnlineUser  # Upserts online presence per request
+│   └── Requests/            # Form request validation
+├── Models/
+│   ├── Category.php         # Forum categories
+│   ├── Forum.php            # Forums (hasMany topics)
+│   ├── Topic.php            # Topics (hasMany posts)
+│   ├── Post.php             # Posts (belongsTo topic, forum, user)
+│   ├── User.php             # Users with group-based permissions
+│   ├── Group.php            # Permission groups (admin, moderator, member, guest)
+│   ├── ForumConfig.php      # Singleton config document
+│   ├── Ban.php              # IP / username / email bans
+│   ├── Report.php           # Reported posts
+│   ├── OnlineUser.php       # Online users tracker
+│   └── Censor.php           # Word censoring rules
+database/
+├── seeders/
+│   ├── DatabaseSeeder.php
+│   ├── GroupSeeder.php
+│   ├── ForumConfigSeeder.php
+│   ├── CategorySeeder.php
+│   ├── AdminUserSeeder.php
+│   └── TestDataSeeder.php   # ~30 posts of realistic test data
+tests/
+└── Feature/                 # 87 feature tests covering all routes
+```
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT
