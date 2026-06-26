@@ -1,5 +1,6 @@
 *.log
 .DS_Store
+**/skills/
 .env
 .env.backup
 .env.production
