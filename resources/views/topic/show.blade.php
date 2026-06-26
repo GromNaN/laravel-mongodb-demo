@@ -56,7 +56,7 @@
         $canEdit = auth()->check() && (auth()->id() === $post->poster_id || auth()->user()->group_id == 1);
         $canDelete = auth()->check() && (auth()->id() === $post->poster_id || auth()->user()->group_id == 1);
     @endphp
-    <div id="p{{ $post->id }}" class="bg-white border border-gray-200 rounded mb-4 overflow-hidden">
+    <div id="p{{ $post->num ?? $postNumber }}" class="bg-white border border-gray-200 rounded mb-4 overflow-hidden">
         <div class="flex">
             {{-- Left column: user info --}}
             <div class="w-36 md:w-44 flex-shrink-0 bg-gray-50 border-r border-gray-200 p-3 flex flex-col items-center text-center">
@@ -90,7 +90,7 @@
                 {{-- Post header --}}
                 <div class="flex items-center justify-between border-b border-gray-100 px-4 py-2 bg-gray-50">
                     <div class="text-xs text-gray-500">
-                        <span class="text-gray-400">#{{ $postNumber }}</span>
+                        <a href="#p{{ $post->num ?? $postNumber }}" class="text-gray-400 hover:text-blue-600 font-mono">#{{ $post->num ?? $postNumber }}</a>
                         &nbsp;&bull;&nbsp;
                         {{ \Carbon\Carbon::parse($post->posted)->format('D, d M Y H:i') }}
                     </div>

@@ -165,6 +165,7 @@ class TestDataSeeder extends Seeder
                 'posted' => $postedAt,
                 'message' => $firstMessage,
                 'hide_smilies' => false,
+                'num' => 1,
             ]);
 
             $topic->first_post_id = (string) $firstPost->_id;
@@ -183,6 +184,8 @@ class TestDataSeeder extends Seeder
             string $message,
             Carbon $postedAt
         ): Post {
+            $num = Post::where('topic_id', (string) $topic->_id)->count() + 1;
+
             return Post::create([
                 'topic_id' => (string) $topic->_id,
                 'forum_id' => (string) $forum->_id,
@@ -192,6 +195,7 @@ class TestDataSeeder extends Seeder
                 'posted' => $postedAt,
                 'message' => $message,
                 'hide_smilies' => false,
+                'num' => $num,
             ]);
         };
 
@@ -509,6 +513,7 @@ class TestDataSeeder extends Seeder
                 'poster' => $lastPost->poster,
                 'poster_id' => (string) $lastPost->poster_id,
                 'time' => $lastPost->posted,
+                'num' => $lastPost->num ?? $posts->count(),
             ];
             $topic->save();
         }
@@ -539,6 +544,7 @@ class TestDataSeeder extends Seeder
                         'subject' => $topic->subject,
                         'poster' => $lp->poster,
                         'time' => $lp->posted,
+                        'num' => $lp->num ?? $posts->count(),
                     ];
                 }
             }

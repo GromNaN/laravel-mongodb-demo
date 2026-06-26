@@ -33,14 +33,14 @@ trait RefreshMongoDatabase
     protected function makeUser(array $overrides = []): User
     {
         return User::create(array_merge([
-            'username'    => 'user_' . uniqid(),
-            'email'       => 'user_' . uniqid() . '@test.com',
-            'password'    => Hash::make('password123'),
-            'group_id'    => 4,
-            'num_posts'   => 0,
-            'registered'  => now(),
-            'last_visit'  => now(),
-            'is_banned'   => false,
+            'username' => 'user_'.uniqid(),
+            'email' => 'user_'.uniqid().'@test.com',
+            'password' => Hash::make('password123'),
+            'group_id' => 4,
+            'num_posts' => 0,
+            'registered' => now(),
+            'last_visit' => now(),
+            'is_banned' => false,
         ], $overrides));
     }
 
@@ -68,13 +68,13 @@ trait RefreshMongoDatabase
     {
         $category = Category::create(['name' => 'Test Category', 'position' => 1]);
         $forum = Forum::create(array_merge([
-            'name'        => 'Test Forum',
+            'name' => 'Test Forum',
             'description' => 'A test forum',
             'category_id' => (string) $category->id,
-            'position'    => 1,
-            'num_topics'  => 0,
-            'num_posts'   => 0,
-            'moderators'  => [],
+            'position' => 1,
+            'num_topics' => 0,
+            'num_posts' => 0,
+            'moderators' => [],
             'permissions' => [],
         ], $overrides));
 
@@ -84,25 +84,26 @@ trait RefreshMongoDatabase
     protected function makeTopic(Forum $forum, User $user, array $overrides = []): array
     {
         $topic = Topic::create(array_merge([
-            'forum_id'   => (string) $forum->id,
-            'subject'    => 'Test Topic ' . uniqid(),
-            'poster'     => $user->username,
-            'poster_id'  => (string) $user->id,
-            'posted'     => now(),
-            'num_views'  => 0,
+            'forum_id' => (string) $forum->id,
+            'subject' => 'Test Topic '.uniqid(),
+            'poster' => $user->username,
+            'poster_id' => (string) $user->id,
+            'posted' => now(),
+            'num_views' => 0,
             'num_replies' => 0,
-            'closed'     => false,
-            'sticky'     => false,
+            'closed' => false,
+            'sticky' => false,
         ], $overrides));
 
         $post = Post::create([
-            'topic_id'  => (string) $topic->id,
-            'forum_id'  => (string) $forum->id,
-            'poster'    => $user->username,
+            'topic_id' => (string) $topic->id,
+            'forum_id' => (string) $forum->id,
+            'poster' => $user->username,
             'poster_id' => (string) $user->id,
             'poster_ip' => '127.0.0.1',
-            'posted'    => now(),
-            'message'   => 'This is the first post content.',
+            'posted' => now(),
+            'message' => 'This is the first post content.',
+            'num' => 1,
         ]);
 
         $topic->update(['first_post_id' => (string) $post->id]);
@@ -115,14 +116,17 @@ trait RefreshMongoDatabase
 
     protected function makePost(Topic $topic, User $user, array $overrides = []): Post
     {
+        $num = Post::where('topic_id', (string) $topic->id)->count() + 1;
+
         return Post::create(array_merge([
-            'topic_id'  => (string) $topic->id,
-            'forum_id'  => $topic->forum_id,
-            'poster'    => $user->username,
+            'topic_id' => (string) $topic->id,
+            'forum_id' => $topic->forum_id,
+            'poster' => $user->username,
             'poster_id' => (string) $user->id,
             'poster_ip' => '127.0.0.1',
-            'posted'    => now(),
-            'message'   => 'A reply post.',
+            'posted' => now(),
+            'message' => 'A reply post.',
+            'num' => $num,
         ], $overrides));
     }
 }

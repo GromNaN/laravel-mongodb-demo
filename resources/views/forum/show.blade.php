@@ -130,7 +130,11 @@
                         by <a href="{{ route('profile.show', $topic->last_poster_id) }}" class="text-blue-500 hover:underline">{{ $topic->last_poster }}</a>
                     </div>
                     <div class="text-gray-400">
-                        <a href="{{ route('topic.show', $topic->id) }}#p{{ $topic->last_post_id }}" class="hover:underline">
+                        @php
+                            $lpNum = $topic->last_post['num'] ?? ($topic->num_replies + 1);
+                            $lpPage = max(1, (int) ceil($lpNum / 25));
+                        @endphp
+                        <a href="{{ route('topic.show', ['topic' => $topic->id, 'page' => $lpPage]) }}#p{{ $lpNum }}" class="hover:underline">
                             {{ \Carbon\Carbon::parse($topic->last_post_time)->diffForHumans() }}
                         </a>
                     </div>

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use MongoDB\Laravel\Eloquent\Model;
-use App\Models\Forum;
 
 class Post extends Model
 {
@@ -22,12 +21,14 @@ class Post extends Model
         'hide_smilies',
         'edited',
         'edited_by',
+        'num',
     ];
 
     protected $casts = [
-        'posted'       => 'datetime',
-        'edited'       => 'datetime',
+        'posted' => 'datetime',
+        'edited' => 'datetime',
         'hide_smilies' => 'bool',
+        'num' => 'int',
     ];
 
     protected $attributes = [

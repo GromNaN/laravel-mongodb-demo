@@ -74,7 +74,11 @@
                         @php $lp = $forum->last_post; @endphp
                         @if(!empty($lp['topic_id']))
                             <div class="font-semibold text-gray-700 truncate max-w-[200px]">
-                                <a href="{{ route('topic.show', $lp['topic_id']) }}#p{{ $lp['post_id'] ?? '' }}" class="text-blue-600 hover:underline">
+                                @php
+                                    $lpNum = $lp['num'] ?? null;
+                                    $lpPage = $lpNum ? max(1, (int) ceil($lpNum / 25)) : 1;
+                                @endphp
+                                <a href="{{ route('topic.show', ['topic' => $lp['topic_id'], 'page' => $lpPage]) }}#p{{ $lpNum ?? '' }}" class="text-blue-600 hover:underline">
                                     {{ Str::limit($lp['subject'] ?? '', 30) }}
                                 </a>
                             </div>

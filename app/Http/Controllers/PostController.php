@@ -37,6 +37,7 @@ class PostController extends Controller
             'poster_ip' => $request->ip(),
             'posted' => $now,
             'message' => $request->input('message'),
+            'num' => 1,
         ]);
 
         $topic->first_post_id = $post->id;
@@ -45,6 +46,7 @@ class PostController extends Controller
             'poster' => $user->username,
             'poster_id' => $user->id,
             'post_id' => $post->id,
+            'num' => 1,
         ];
         $topic->save();
 
@@ -56,6 +58,7 @@ class PostController extends Controller
             'post_id' => $post->id,
             'topic_id' => $topic->id,
             'subject' => $topic->subject,
+            'num' => 1,
         ];
         $forum->save();
 
@@ -85,6 +88,7 @@ class PostController extends Controller
 
         $user = Auth::user();
         $now = now();
+        $num = $topic->posts()->count() + 1;
 
         $post = $topic->posts()->create([
             'forum_id' => $topic->forum_id,
@@ -93,6 +97,7 @@ class PostController extends Controller
             'poster_ip' => $request->ip(),
             'posted' => $now,
             'message' => $request->input('message'),
+            'num' => $num,
         ]);
 
         $topic->increment('num_replies');
@@ -101,6 +106,7 @@ class PostController extends Controller
             'poster' => $user->username,
             'poster_id' => $user->id,
             'post_id' => $post->id,
+            'num' => $num,
         ];
         $topic->save();
 
@@ -113,6 +119,7 @@ class PostController extends Controller
                 'post_id' => $post->id,
                 'topic_id' => $topic->id,
                 'subject' => $topic->subject,
+                'num' => $num,
             ];
             $forum->save();
         }
@@ -120,10 +127,10 @@ class PostController extends Controller
         $user->increment('num_posts');
         $user->save();
 
-        $lastPage = max(1, (int) ceil($topic->posts()->count() / 25));
+        $lastPage = max(1, (int) ceil($num / 25));
 
         return redirect()->route('topic.show', ['topic' => $topic->id, 'page' => $lastPage])
-            ->withFragment('post-'.$post->id);
+            ->withFragment('p'.$num);
     }
 
     public function edit(Post $post): View
@@ -154,8 +161,10 @@ class PostController extends Controller
         $post->edited_by = $user->username;
         $post->save();
 
-        return redirect()->route('topic.show', $post->topic_id)
-            ->withFragment('post-'.$post->id);
+        $page = max(1, (int) ceil(($post->num ?? 1) / 25));
+
+        return redirect()->route('topic.show', ['topic' => $post->topic_id, 'page' => $page])
+            ->withFragment('p'.($post->num ?? ''));
     }
 
     public function destroy(Post $post): RedirectResponse
@@ -186,6 +195,7 @@ class PostController extends Controller
                         'poster' => $lastPost->poster,
                         'poster_id' => $lastPost->poster_id,
                         'post_id' => $lastPost->id,
+                        'num' => $lastPost->num,
                     ];
                 }
                 $topic->save();
