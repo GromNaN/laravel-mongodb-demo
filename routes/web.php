@@ -18,14 +18,14 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/forum/{forum}', [ForumController::class, 'show'])->name('forum.show');
 Route::get('/topic/{topic}', [TopicController::class, 'show'])->name('topic.show');
 Route::get('/topic/{topic}/new-post', [TopicController::class, 'newPost'])->name('topic.new-post');
-Route::get('/search', [SearchController::class, 'index'])->name('search.index');
+Route::get('/search', [SearchController::class, 'index'])->name('search.index')->middleware('throttle:search');
 Route::get('/user/{user}', [ProfileController::class, 'show'])->name('profile.show');
 Route::get('/userlist', [UserController::class, 'index'])->name('user.index');
 Route::get('/help', [HelpController::class, 'index'])->name('help.index');
 Route::get('/register', [AuthController::class, 'registerForm'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:register');
 Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Auth routes

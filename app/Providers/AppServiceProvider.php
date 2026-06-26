@@ -10,7 +10,10 @@ use App\Models\Post;
 use App\Models\Report;
 use App\Models\Topic;
 use App\Models\User;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -23,6 +26,19 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // Rate limiters
+        RateLimiter::for('login', function (Request $request) {
+            return Limit::perMinute(10)->by($request->ip());
+        });
+
+        RateLimiter::for('register', function (Request $request) {
+            return Limit::perMinute(5)->by($request->ip());
+        });
+
+        RateLimiter::for('search', function (Request $request) {
+            return Limit::perMinute(30)->by($request->ip());
+        });
+
         // Route model binding
         Route::model('forum', Forum::class);
         Route::model('topic', Topic::class);
