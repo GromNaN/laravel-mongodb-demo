@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('CACHE_STORE', 'file'),
+    'default' => env('CACHE_STORE', 'mongodb'),
 
     /*
     |--------------------------------------------------------------------------
@@ -37,6 +37,14 @@ return [
         'array' => [
             'driver' => 'array',
             'serialize' => false,
+        ],
+
+        'mongodb' => [
+            'driver' => 'mongodb',
+            'connection' => 'mongodb',
+            'collection' => 'cache',
+            'lock_collection' => 'cache_locks',
+            'expire_after_seconds' => 0,
         ],
 
         'database' => [
