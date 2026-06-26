@@ -20,9 +20,10 @@ A faithful recreation of the [FluxBB](https://fluxbb.org) forum software built w
 | Eloquent models with MongoDB | All models in `app/Models/` |
 | `hasMany` / `belongsTo` relations | `Topic::posts()`, `Post::topic()`, `Post::forum()` |
 | Embedded documents | `Forum::last_post`, `Topic::last_post` (stored as arrays) |
-| Singleton document pattern | `ForumConfig::instance()` |
+| Singleton document pattern | `ForumConfig::instance()` — single config document |
 | `increment()` / `decrement()` | Forum/topic/user post counters |
-| Regex queries | `SearchController` (replaced by Atlas Search on atlas-local) |
+| MongoDB cache store | Rate limiting and cache via `driver: mongodb` (TTL indexes) |
+| Atlas Search (`$search`) | Full-text search on topics and posts; regex fallback when unavailable |
 
 ## Requirements
 
@@ -59,7 +60,9 @@ The application is then available at `http://localhost:8000`.
 
 Default admin credentials: `admin` / `adminpass`
 
-> **Note:** `docker compose up -d` starts [`mongodb/mongodb-atlas-local`](https://www.mongodb.com/docs/atlas/cli/current/atlas-cli-local-cloud/), a local MongoDB instance bundled with the Atlas Search engine (mongot). This enables full-text search on the `/search` route. Without it, the application falls back to regex-based search automatically.
+> **Note — MongoDB Atlas Local:** `docker compose up -d` starts [`mongodb/mongodb-atlas-local`](https://www.mongodb.com/docs/atlas/cli/current/atlas-cli-local-cloud/), a local MongoDB instance bundled with the Atlas Search engine (mongot). This enables full-text search on the `/search` route. Without it, the application falls back to regex-based search automatically.
+
+> **Note — cache and rate limiting:** The application uses the `mongodb` cache driver (configured in `config/cache.php`) so that Laravel's rate limiting works with MongoDB. The standard Laravel `database` cache driver uses SQL's `INSERT OR IGNORE` which is not supported by MongoDB. Make sure your `.env` does **not** set `CACHE_STORE=database`; `CACHE_STORE=mongodb` (the default) or `CACHE_STORE=file` are both fine.
 
 ## Running tests
 
