@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "/opt/homebrew/Cellar/php/8.5.2/bin/php",
+            "args": [
+                "/Users/jerome/Develop/one-shot-workplaces/fluxbb/artisan",
+                "boost:mcp"
+            ]
+        }
+    }
+}
