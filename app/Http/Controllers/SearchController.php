@@ -75,6 +75,11 @@ class SearchController extends Controller
         string $author,
         array $forumNames,
     ): Collection {
+        // Skip Atlas Search in test environment: newly inserted documents are not immediately indexed.
+        if (app()->environment('testing')) {
+            return $this->regexSearch($keywords, $searchIn, $forumId, $author, $forumNames);
+        }
+
         try {
             return $this->atlasSearchPipeline($keywords, $searchIn, $forumId, $author, $forumNames);
         } catch (RuntimeException $e) {

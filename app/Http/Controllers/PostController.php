@@ -24,25 +24,26 @@ class PostController extends Controller
         $now = now();
 
         $topic = $forum->topics()->create([
-            'subject'   => $request->input('subject'),
-            'poster'    => $user->username,
+            'subject' => $request->input('subject'),
+            'poster' => $user->username,
             'poster_id' => $user->id,
-            'posted'    => $now,
+            'posted' => $now,
         ]);
 
         $post = $topic->posts()->create([
-            'forum_id'  => $forum->id,
-            'poster'    => $user->username,
+            'forum_id' => $forum->id,
+            'poster' => $user->username,
             'poster_id' => $user->id,
             'poster_ip' => $request->ip(),
-            'posted'    => $now,
-            'message'   => $request->input('message'),
+            'posted' => $now,
+            'message' => $request->input('message'),
         ]);
 
         $topic->first_post_id = $post->id;
         $topic->last_post = [
-            'time'    => $now->timestamp,
-            'poster'  => $user->username,
+            'time' => $now->timestamp,
+            'poster' => $user->username,
+            'poster_id' => $user->id,
             'post_id' => $post->id,
         ];
         $topic->save();
@@ -50,11 +51,11 @@ class PostController extends Controller
         $forum->increment('num_topics');
         $forum->increment('num_posts');
         $forum->last_post = [
-            'time'     => $now->timestamp,
-            'poster'   => $user->username,
-            'post_id'  => $post->id,
+            'time' => $now->timestamp,
+            'poster' => $user->username,
+            'post_id' => $post->id,
             'topic_id' => $topic->id,
-            'subject'  => $topic->subject,
+            'subject' => $topic->subject,
         ];
         $forum->save();
 
@@ -86,18 +87,19 @@ class PostController extends Controller
         $now = now();
 
         $post = $topic->posts()->create([
-            'forum_id'  => $topic->forum_id,
-            'poster'    => $user->username,
+            'forum_id' => $topic->forum_id,
+            'poster' => $user->username,
             'poster_id' => $user->id,
             'poster_ip' => $request->ip(),
-            'posted'    => $now,
-            'message'   => $request->input('message'),
+            'posted' => $now,
+            'message' => $request->input('message'),
         ]);
 
         $topic->increment('num_replies');
         $topic->last_post = [
-            'time'    => $now->timestamp,
-            'poster'  => $user->username,
+            'time' => $now->timestamp,
+            'poster' => $user->username,
+            'poster_id' => $user->id,
             'post_id' => $post->id,
         ];
         $topic->save();
@@ -106,11 +108,11 @@ class PostController extends Controller
         if ($forum) {
             $forum->increment('num_posts');
             $forum->last_post = [
-                'time'     => $now->timestamp,
-                'poster'   => $user->username,
-                'post_id'  => $post->id,
+                'time' => $now->timestamp,
+                'poster' => $user->username,
+                'post_id' => $post->id,
                 'topic_id' => $topic->id,
-                'subject'  => $topic->subject,
+                'subject' => $topic->subject,
             ];
             $forum->save();
         }
@@ -121,7 +123,7 @@ class PostController extends Controller
         $lastPage = max(1, (int) ceil($topic->posts()->count() / 25));
 
         return redirect()->route('topic.show', ['topic' => $topic->id, 'page' => $lastPage])
-            ->withFragment('post-' . $post->id);
+            ->withFragment('post-'.$post->id);
     }
 
     public function edit(Post $post): View
@@ -147,13 +149,13 @@ class PostController extends Controller
             'You are not allowed to edit this post.',
         );
 
-        $post->message   = $request->input('message');
-        $post->edited    = now();
+        $post->message = $request->input('message');
+        $post->edited = now();
         $post->edited_by = $user->username;
         $post->save();
 
         return redirect()->route('topic.show', $post->topic_id)
-            ->withFragment('post-' . $post->id);
+            ->withFragment('post-'.$post->id);
     }
 
     public function destroy(Post $post): RedirectResponse
@@ -180,8 +182,9 @@ class PostController extends Controller
                 $lastPost = $topic->posts()->orderBy('posted', 'desc')->first();
                 if ($lastPost) {
                     $topic->last_post = [
-                        'time'    => $lastPost->posted->timestamp,
-                        'poster'  => $lastPost->poster,
+                        'time' => $lastPost->posted->timestamp,
+                        'poster' => $lastPost->poster,
+                        'poster_id' => $lastPost->poster_id,
                         'post_id' => $lastPost->id,
                     ];
                 }

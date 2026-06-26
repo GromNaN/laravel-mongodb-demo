@@ -72,14 +72,14 @@
                     {{-- Last post info --}}
                     <td class="px-3 py-3 text-xs text-gray-600 whitespace-nowrap hidden md:table-cell min-w-[180px]">
                         @php $lp = $forum->last_post; @endphp
-                        @if(!empty($lp['id']))
+                        @if(!empty($lp['topic_id']))
                             <div class="font-semibold text-gray-700 truncate max-w-[200px]">
-                                <a href="{{ route('topic.show', $lp['id']) }}" class="text-blue-600 hover:underline">
+                                <a href="{{ route('topic.show', $lp['topic_id']) }}#p{{ $lp['post_id'] ?? '' }}" class="text-blue-600 hover:underline">
                                     {{ Str::limit($lp['subject'] ?? '', 30) }}
                                 </a>
                             </div>
                             <div class="text-gray-500 mt-0.5">
-                                by <span class="text-blue-500">{{ $lp['username'] ?? '' }}</span>
+                                by <span class="text-blue-500">{{ $lp['poster'] ?? '' }}</span>
                             </div>
                             <div class="text-gray-400 mt-0.5">
                                 {{ \Carbon\Carbon::parse($lp['time'] ?? now())->diffForHumans() }}
