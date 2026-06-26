@@ -28,7 +28,7 @@ A faithful recreation of the [FluxBB](https://fluxbb.org) forum software built w
 
 - PHP 8.3+
 - Composer
-- Docker & Docker Compose (for the MongoDB atlas-local container)
+- Docker & Docker Compose (for the MongoDB Atlas Local container)
 
 ## Installation
 
@@ -42,19 +42,24 @@ composer install
 cp .env.example .env
 php artisan key:generate
 
-# 3. Start MongoDB (atlas-local via Docker)
+# 3. Start MongoDB Atlas Local (includes mongot for Atlas Search)
 docker compose up -d
 
 # 4. Seed the database
 php artisan db:seed
 
-# 5. Start the development server
+# 5. Create Atlas Search indexes
+php artisan search:create-indexes
+
+# 6. Start the development server
 php artisan serve
 ```
 
 The application is then available at `http://localhost:8000`.
 
 Default admin credentials: `admin` / `adminpass`
+
+> **Note:** `docker compose up -d` starts [`mongodb/mongodb-atlas-local`](https://www.mongodb.com/docs/atlas/cli/current/atlas-cli-local-cloud/), a local MongoDB instance bundled with the Atlas Search engine (mongot). This enables full-text search on the `/search` route. Without it, the application falls back to regex-based search automatically.
 
 ## Running tests
 
